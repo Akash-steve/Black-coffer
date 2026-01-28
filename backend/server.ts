@@ -69,6 +69,8 @@ const dataSchema = new mongoose.Schema({
 
 const Data = mongoose.model<IData>('Data', dataSchema);
 
+export default app;
+
 // Routes
 app.get('/api/data', async (req: Request, res: Response) => {
   try {
@@ -115,6 +117,8 @@ app.get('/api/filters', async (req: Request, res: Response) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
