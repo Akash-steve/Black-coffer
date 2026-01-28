@@ -1,6 +1,8 @@
-import type { AppProps } from 'next/app'
+'use client';
+
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
+import { ReactNode } from 'react';
 
 const theme = createTheme({
   palette: {
@@ -14,11 +16,11 @@ const theme = createTheme({
   },
 });
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function ThemeRegistry({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Component {...pageProps} />
+      {children}
     </ThemeProvider>
   );
 }
