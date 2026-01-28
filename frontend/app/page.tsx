@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { Box, Container, Grid, Paper, Typography, useTheme } from '@mui/material';
+import { Box, Grid, Paper, Typography, useTheme } from '@mui/material';
 import Sidebar from '../components/Sidebar';
 import TopBar from '../components/TopBar';
 import FilterPanel from '../components/FilterPanel';
@@ -65,11 +67,10 @@ export default function Home() {
 
   const fetchData = async () => {
     try {
-      console.log('Fetching data with filters:', filters);
-      const response = await axios.get('http://localhost:5000/api/data', {
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await axios.get(`${API_URL}/api/data`, {
         params: filters,
       });
-      console.log('Received data:', response.data.length, 'items');
       setData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -78,9 +79,8 @@ export default function Home() {
 
   const fetchFilters = async () => {
     try {
-      console.log('Fetching filters...');
-      const response = await axios.get('http://localhost:5000/api/filters');
-      console.log('Received filters:', response.data);
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+      const response = await axios.get(`${API_URL}/api/filters`);
       setAvailableFilters(response.data);
     } catch (error) {
       console.error('Error fetching filters:', error);
@@ -104,7 +104,7 @@ export default function Home() {
           display: 'flex', 
           flexDirection: 'column',
           marginLeft: sidebarOpen ? '280px' : '80px',
-          transition: theme => theme.transitions.create('margin-left', {
+          transition: (theme) => theme.transitions.create('margin-left', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
           }),

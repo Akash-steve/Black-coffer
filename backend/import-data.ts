@@ -1,11 +1,13 @@
-const mongoose = require('mongoose');
-const fs = require('fs');
+import mongoose from 'mongoose';
+import fs from 'fs';
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config();
 
 // MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/dashboard', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/dashboard';
+mongoose.connect(MONGODB_URI);
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -14,6 +16,26 @@ db.once('open', () => {
 });
 
 // Data Schema
+interface IData extends mongoose.Document {
+  end_year: string;
+  intensity: number;
+  sector: string;
+  topic: string;
+  insight: string;
+  url: string;
+  region: string;
+  start_year: string;
+  impact: string;
+  added: string;
+  published: string;
+  country: string;
+  relevance: number;
+  pestle: string;
+  source: string;
+  title: string;
+  likelihood: number;
+}
+
 const dataSchema = new mongoose.Schema({
   end_year: String,
   intensity: Number,
@@ -34,7 +56,7 @@ const dataSchema = new mongoose.Schema({
   likelihood: Number
 });
 
-const Data = mongoose.model('Data', dataSchema);
+const Data = mongoose.model<IData>('Data', dataSchema);
 
 // Import data
 const importData = async () => {
@@ -44,7 +66,8 @@ const importData = async () => {
     console.log('Cleared existing data');
 
     // Read JSON file
-    const jsonData = JSON.parse(fs.readFileSync('../jsondata.json', 'utf8'));
+    const filePath = path.resolve(process.cwd(), '..', 'jsondata.json');
+    const jsonData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
     console.log(`Found ${jsonData.length} records to import`);
 
     // Insert data
